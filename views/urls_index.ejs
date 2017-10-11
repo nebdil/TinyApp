@@ -7,18 +7,24 @@
     <!-- Add your EJS code here -->
     <% include partials/_header.ejs %>
     <table>
-      <tr></tr>
+      <tr>
         <th>FULL URL</th>
-        <th>SHORTENED URL</th>
-      <tr></tr>
-        <td><%= urls.b2xVn2 %></td>
-        <td>b2xVn2</td>
-      <tr></tr>
-        <td><%= urls.gsm5xK %></td>
-        <td>gsm5xK</td>
+        <th>SHORTENED URL</th></tr>
+        <% for (key in urls) { %>
+          <tr>
+            <td> <%= urls[key] %> </td>
+            <td> <%= key %> </td>
+            <td>
+              <form method="POST" action="/urls/<%= key %>/delete">
+                <button type = "submit">DELETE</button>
+              </form>
+            </td>
+          </tr>
+        <% } %>
+
     </table>
 
-    <a href = ""></a>
+    <a href = "">CLICK TO GET YOUR SHORTENED URL TODAY</a>
 
 </body>
 </html>
