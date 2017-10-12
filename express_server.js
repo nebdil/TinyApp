@@ -45,16 +45,24 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/urls/register", (req, res) => {
-  newId = generateRandomString();
-  users[newId] = {
-    id: newId,
-    email: req.body.email,
-    password: req.body.password
+  let newId = generateRandomString();
+  for (key in users) {
+    if (!req.body.email || !req.body.password) {
+      res.status(404).send("Sorry, invalid email or password");
+    }
+    else if (users[key].email === req.body.email) {
+      res.status(400).send("Sorry existing email");
+    }
+    else {
+      users[key] = {
+        id: newId,
+        email: req.body.email,
+        password: req.body.password
+      }
+      res.cookie("user_id", newId);
+      res.redirect("/urls");
+    }
   }
-  res.cookie("user_id", newId);
-  console.log(users[newId]);
-  console.log(users);
-  res.redirect("/urls");
 });
 
 app.get("/urls/register", (req, res) => {
