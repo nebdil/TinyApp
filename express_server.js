@@ -35,20 +35,23 @@ function generateRandomString() {
 };
 
 app.post("/login", (req, res) => {
-  for (key in users) {
+  let hasEmail = false;
+  for (let key in users) {
     if (users[key].email === req.body.email) {
       if (users[key].password === req.body.password) {
+        hasEmail = true;
         res.cookie("user_id", users[key].id);
         console.log("everything fine");
         res.redirect("/");
       }
       else {
+        hasEmail = true;
         res.status(403).send("Sorry, password does not match");
         console.log("no pass");
       }
     }
   }
-  if (users[key].email !== req.body.email) {
+  if (!hasEmail) {
     console.log("no email");
     res.status(403).send("Sorry, email provided is invalid");
   }
@@ -69,7 +72,7 @@ app.get("/login", (req, res) => {
 
 app.post("/urls/register", (req, res) => {
   let newId = generateRandomString();
-  for (key in users) {
+  for (let key in users) {
     if (users[key].email === req.body.email) {
       res.status(400).send("Sorry existing email");
       return false;
