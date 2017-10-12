@@ -44,6 +44,14 @@ app.post("/logout", (req, res) => {
   res.redirect("/urls");
 });
 
+app.get("/login", (req, res) => {
+  let templateVars = {
+    urls: urlDatabase,
+    user: users[req.cookies["user_id"]]
+  };
+  res.render("urls_login", templateVars);
+});
+
 app.post("/urls/register", (req, res) => {
   let newId = generateRandomString();
   for (key in users) {
@@ -69,6 +77,7 @@ app.post("/urls/register", (req, res) => {
 app.get("/urls/register", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
+    user: users[req.cookies["user_id"]]
   };
   res.render("urls_registration", templateVars);
 });
@@ -76,7 +85,7 @@ app.get("/urls/register", (req, res) => {
 app.get("/urls/new", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[req.cookies["user_id"]]
   };
   res.render("urls_new", templateVars);
 });
@@ -107,7 +116,7 @@ app.post("/urls/:id", (req, res) => {
 app.get("/urls", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[req.cookies["user_id"]]
   };
   res.render("urls_index", templateVars);
 });
@@ -127,7 +136,7 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id],
-    username: req.cookies["username"]
+    user: users[req.cookies["user_id"]]
   };
   res.render("urls_show", templateVars);
 });
