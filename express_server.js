@@ -6,12 +6,26 @@ const cookieParser = require('cookie-parser');
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "gsm5xK": "http://www.google.com"
-}
+};
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+};
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+app.set("view engine", "ejs");
 
 function generateRandomString() {
     var str = "";
+    //regex
     var char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for(var i = 0; i < 6; i++) {
         str += char.charAt(Math.floor(Math.random() * char.length));
@@ -30,7 +44,25 @@ app.post("/logout", (req, res) => {
   res.redirect("/urls");
 });
 
-app.set("view engine", "ejs");
+app.post("/urls/register", (req, res) => {
+  newId = generateRandomString();
+  users[newId] = {
+    id: newId,
+    email: req.body.email,
+    password: req.body.password
+  }
+  res.cookie("user_id", newId);
+  console.log(users[newId]);
+  console.log(users);
+  res.redirect("/urls");
+});
+
+app.get("/urls/register", (req, res) => {
+  let templateVars = {
+    urls: urlDatabase,
+  };
+  res.render("urls_registration", templateVars);
+});
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
