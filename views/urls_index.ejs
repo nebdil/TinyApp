@@ -10,9 +10,9 @@
       <tr>
         <th>FULL URL</th>
         <th>SHORTENED URL</th></tr>
-        <% for (key in urls) { %>
+        <% for (let key in urls) { %>
           <tr>
-            <td> <%= urls[key] %> </td>
+            <td> <%= urls[key].long %> </td>
             <td> <%= key %> </td>
             <td><a href = "/urls/<%= key %>">EDIT</a></td>
             <td>
