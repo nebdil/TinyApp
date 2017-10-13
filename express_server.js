@@ -3,9 +3,9 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
-const bcrypt = require('bcrypt');
-const password = req.body.password;
-const hashedPassword = bcrypt.hashSync(password, 10);
+// const bcrypt = require('bcrypt');
+// const password = req.body.password;
+// const hashedPassword = bcrypt.hashSync(password, 10);
 const urlDatabase = {
   "b2xVn2": {
     short: "b2xVn2",
