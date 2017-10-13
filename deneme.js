@@ -1,45 +1,44 @@
-app.post("/login", (req, res) => {
-  let hasEmail = false;
-  for (let key in users) {
-    if (users[key].email === req.body.email) {
-      if (bcrypt.compareSync(req.params.password, hashedPassword)) {
-        hasEmail = true;
-        res.cookie("user_id", users[key].id);
-        console.log("everything fine");
-        res.redirect("/");
-      }
-      else {
-        hasEmail = true;
-        res.status(403).send("Sorry, password does not match");
-        console.log("no pass");
-      }
+app.get("/urls/:id", (req, res) => {
+  let templateVars = {
+    shortURL: req.params.id,
+    longURL: urlDatabase[req.params.id],
+    user: users[req.session["user_id"]]
+  };
+  if (urlDatabase[req.session["user_id"]]) {
+    if (req.session["user_id"]) {
+    if (req.session["user_id"] === urlDatabase[req.params.id].userID) {
+      res.render("urls_show", templateVars);
+    } else {
+      templateVars.errorMessages = "Sorry, this shortened URL is not yours to access.";
+      res.render("urls_error", templateVars);
     }
-  }
-  if (!hasEmail) {
-    console.log("no email");
-    res.status(403).send("Sorry, email provided is invalid");
+    } else {
+      templateVars.errorMessages = "Sorry, you are not logged in. Log in or register to access."
+      res.render("urls_error", templateVars);
+    }
+  } else {
+    templateVars.errorMessages = "Sorry, this id does not exist."
+    res.render("urls_error", templateVars);
   }
 });
 
-app.post("/login", (req, res) => {
-  let hasEmail = false;
-  for (let key in users) {
-    if (users[key].email === req.body.email) {
-      if (users[key].password === req.body.password) {
-        hasEmail = true;
-        res.cookie("user_id", users[key].id);
-        console.log("everything fine");
-        res.redirect("/");
-      }
-      else {
-        hasEmail = true;
-        res.status(403).send("Sorry, password does not match");
-        console.log("no pass");
-      }
+app.get("/urls/:id", (req, res) => {
+  let templateVars = {
+    shortURL: req.params.id,
+    longURL: urlDatabase[req.params.id],
+    user: users[req.session["user_id"]]
+  };
+  if (urlDatabase[req.params.id]) {
+    if (req.session["user_id"]) {
+    if (req.session["user_id"] === urlDatabase[req.params.id].userID) {
+      res.render("urls_show", templateVars);
+    } else {
+      res.render("urls_errorNotYours", templateVars);
     }
-  }
-  if (!hasEmail) {
-    console.log("no email");
-    res.status(403).send("Sorry, email provided is invalid");
+    } else {
+      res.render("urls_error", templateVars);
+    }
+  } else {
+    res.render("urls_errorIdDoesnt", templateVars);
   }
 });

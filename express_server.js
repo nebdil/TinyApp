@@ -91,7 +91,11 @@ app.post("/urls/register", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.end("Hello!");
+  if (req.session.user_id) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/urls.json", (req, res) => {
@@ -109,14 +113,15 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  let templateVars = {
+    urls: urlsForUser(req.session["user_id"]),
+    user: users[req.session["user_id"]]
+  };
   if (!req.session["user_id"]) {
-    res.send("Please login/register first");
+    templateVars.errorMessages = "You have to login or register to continue."
+    res.render("urls_error", templateVars);
   }
   else {
-    let templateVars = {
-      urls: urlsForUser(req.session["user_id"]),
-      user: users[req.session["user_id"]]
-    };
     res.render("urls_index", templateVars);
   }
 });
@@ -150,11 +155,21 @@ app.get("/urls/:id", (req, res) => {
     longURL: urlDatabase[req.params.id],
     user: users[req.session["user_id"]]
   };
-  if (req.session["user_id"] === urlDatabase[req.params.id].userID) {
-    res.render("urls_show", templateVars);
-  }
-  else {
-    res.status(403).send("Restricted site");
+  if (urlDatabase[req.session["user_id"]]) {
+    if (req.session["user_id"]) {
+    if (req.session["user_id"] === urlDatabase[req.params.id].userID) {
+      res.render("urls_show", templateVars);
+    } else {
+      templateVars.errorMessages = "Sorry, this shortened URL is not yours to access.";
+      res.render("urls_error", templateVars);
+    }
+    } else {
+      templateVars.errorMessages = "Sorry, you are not logged in. Log in or register to access."
+      res.render("urls_error", templateVars);
+    }
+  } else {
+    templateVars.errorMessages = "Sorry, this id does not exist."
+    res.render("urls_error", templateVars);
   }
 });
 
@@ -206,7 +221,7 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  req.session = null;
   res.redirect("/urls");
 });
 
