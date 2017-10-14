@@ -87,7 +87,7 @@ app.get("/urls", (req, res) => {//if not logged in, gives an error, if logged in
 });
 app.get("/urls/new", (req, res) => {//if logged in directs to the page to create new short URLs, if not to login page
   let templateVars = {
-    user: users[req.sesson.user_id]
+    user: users[req.session.user_id]
   };
   req.session.user_id ? res.render("urls_new", templateVars) : res.redirect("/login");
 });
